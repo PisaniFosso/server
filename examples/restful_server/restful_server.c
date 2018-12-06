@@ -16,17 +16,12 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
 
   char command[BUFFER + 40];
   /* Get form variables */
-  // fgets(code, BUFFER, fp) ;
   mg_get_http_var(&hm->body, "code", code, sizeof(code));
-// python -c \"\"
   strcpy(command, "python -c \"");
   strcat(command, code);
   strcat(command, "\">out.txt");
-  // strcat(command, "\"");
   system(command);
   printf("%s\n", command);
-  // mg_get_http_var(&hm->body, "n2", n2, sizeof(n2));
-// 
   /* Send headers */
   mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
   
@@ -38,26 +33,11 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
   }
   
   /* Compute the result and send it back as a JSON object */
-  // result = strtod(n1, NULL) + strtod(n2, NULL);
 FILE *fp = fopen("out.txt", "r");
 char path[PATH_MAX];
 int i = 0;
  while(fgets(path, PATH_MAX, fp) != NULL)
   strcat(file, path);
-    // printf("%s", path);
-  //   for (int i = 0; ((file[i] = fgetc(fp))!=NULL) && (i < sizeof(file)) ; ++i)
-  // {
-  //    // file[i] = fgetc(fp);
-
-  // }
- 
-  // mg_printf(nc,
-  //               "HTTP/1.1 200 OK\r\n"
-  //               "Content-Type: text/plain\r\n"
-  //               "Connection: close\r\n\r\n"
-  //               "Written %s of POST data to a temp file\n\n",
-  //               file);
-  //     nc->flags |= MG_F_SEND_AND_CLOSE;
 
 
   mg_printf_http_chunk(nc, "%s", file);
@@ -86,31 +66,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
 }
 
 int main(int argc, char *argv[]) {
-  FILE * fp =fopen("hello.py", "r");
-  const int BUFFER = 1<<10;
-  // char code[BUFFER];
-  // printf("%d\n", PATH_MAX);
-
-
-
-  // fgets(code, BUFFER, fp) ;
-  // char command[BUFFER + 20];
-  // strcpy(command, "python -c '");
-  // strcat(command, code);
-  // strcat(command, "'>o.txt");
-  // strcat(command, "\"");
-  // system(command);
-  // printf("%s\n", command);
-
-
-  // char path[]
-  // while (fgets(path, PATH_MAX, fp) != NULL)
-    // strcat(command, str);
-    // printf("%s", path);
-  // fclose(fp);
-
-
-  // return 0;
+  
   struct mg_mgr mgr;
   struct mg_connection *nc;
   struct mg_bind_opts bind_opts;
