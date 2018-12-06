@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AJAX Upload Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style type="text/css">
+    * { outline: none; }
+    body {
+      background-color: #789; margin: 0;
+      padding: 0; font: 16px/1.4 Helvetica, Arial, sans-serif;
+      font: 16px/1.4 Helvetica, Arial, sans-serif;
+    }
+    div.content {
+      width: 800px; margin: 2em auto; padding: 20px 50px;
+      background-color: #fff; border-radius: 1em;
+    }
+    label { display: inline-block; min-width: 7em; }
+    input { border: 1px solid #ccc; padding: 0.2em; }
+    a:link, a:visited { color: #69c; text-decoration: none; }
+    @media (max-width: 700px) {
+      body { background-color: #fff; }
+      div.content { width: auto; margin: 0 auto; padding: 1em; }
+    }
+</style>
+    <div class="content">
+      
+    
+  
+  <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+  <script type="text/javascript">
+    function updateProgress(evt) {
+      if (evt.lengthComputable) {
+        document.getElementById("output").textContent =
+              "Uploaded " + evt.loaded + " of " + evt.total + " bytes";
+      }
+    }
+    function uploadFile() {
+      var file_data = new FormData(document.getElementById('filename'));
+      $.ajax({
+        url: "/upload",
+        type: "POST",
+        data: file_data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        xhr: function() {
+          myXhr = $.ajaxSettings.xhr();
+          if(myXhr.upload){
+            myXhr.upload.addEventListener('progress',updateProgress, false); // for handling the progress of the upload
+          }
+          return myXhr;
+        },
+      }).done(function(data) {
+          document.getElementById("output").textContent = "Result: " + data;
+      });
+      return false;
+    }
+    function placeName(){
+      let file = document.getElementById("files")
+    let place = document.getElementById("holder")
+    file.addEventListener("change", function(e){
+      let dir = e.target.value.split("\\")
+      console.log(dir)
+      place.value = dir[dir.length - 1]
+    })
+    }
+
+    function newload(){
+      let place = document.getElementById("holder")
+      let namefile = document.getElementById("files")
+      place.value = ""
+      namefile.value = ""
+    }
+
+    jQuery(function() {
+
+    $(document).on('keyup', '#code', function() {
+      $.ajax({
+        url: '/api/v1/compile',
+        method: 'POST',
+        dataType: 'json',
+        data: { n1: $('#n1').val(), n2: $('#n2').val() },
+        success: function(json) {
+          $('#result').html(json.result);
+        }
+      });
+    });
+
+  });
+  </script>
+</head>
+
+<body onload="newload()">
+
+  <h1>Upload file using Ajax - that also gives progress report</h1>
+  <form method="post" id="filename" name="filename" onsubmit="return uploadFile();">
+    <label>Select a file:</label><br>
+    <input type="text" id="holder" placeholder=".cpp, .cu, .py">
+   
+  <label for="files" style="background-color: buttonface; padding: 5px; border: 0.5px solid; border-color: buttonface" onclick="placeName()" required> Select file</label>
+ 
+    <input type="submit" value="Upload" onclick="file()" />
+ <input type="file" id="files" name="file" required>
+  </form>
+
+  </div>
+
+    <br><div id="output"></div> 
+ <br>
+<div class="content">
+  
+  <div>
+      <label>Number 1:</label> <input type="text" id="code" />
+    </div>
+    <div>
+</div>
+<div class="content"><br>
+<span id="result">&nbsp;</span>
+</div>
+
+</body>
+</html>
