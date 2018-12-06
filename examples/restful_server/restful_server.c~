@@ -24,19 +24,19 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
   strcat(command, "\">out.txt");
   // strcat(command, "\"");
   system(command);
-  printf("%s\n", command);
+  //printf("%s\n", command);
   // mg_get_http_var(&hm->body, "n2", n2, sizeof(n2));
 // 
   /* Send headers */
   mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-  
+  char q[10];
   char file[1000];
   for (int i = 0; i < 1000; ++i)
   {
     /* code */
     file[i]= 0;
   }
-  
+  strcpy(q, command);
   /* Compute the result and send it back as a JSON object */
   // result = strtod(n1, NULL) + strtod(n2, NULL);
 FILE *fp = fopen("out.txt", "r");
