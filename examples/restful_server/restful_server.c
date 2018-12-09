@@ -15,13 +15,17 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
   double result;
 
   char command[BUFFER + 40];
-  /* Get form variables */
+  /* Get code form html page */
   mg_get_http_var(&hm->body, "code", code, sizeof(code));
   strcpy(command, "python -c \"");
   strcat(command, code);
   strcat(command, "\">out.txt");
+
+  //execute the command
   system(command);
+  //print the command to execute
   printf("%s\n", command);
+
   /* Send headers */
   mg_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
   
@@ -32,12 +36,13 @@ static void handle_sum_call(struct mg_connection *nc, struct http_message *hm) {
     file[i]= 0;
   }
   
-  /* Compute the result and send it back as a JSON object */
-FILE *fp = fopen("out.txt", "r");
-char path[PATH_MAX];
-int i = 0;
- while(fgets(path, PATH_MAX, fp) != NULL)
-  strcat(file, path);
+
+  /* Compute the result and send it back as a txt file */
+  FILE *fp = fopen("out.txt", "r");
+  char path[PATH_MAX];
+  int i = 0;
+   while(fgets(path, PATH_MAX, fp) != NULL)
+    strcat(file, path);
 
 
   mg_printf_http_chunk(nc, "%s", file);
